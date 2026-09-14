@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OtonaShokudo-UBI-GenAI Prototype</title>
+    <!-- stliteのスタイルシートとスクリプトを読み込み（無料でブラウザ上でPythonを動かす仕組み） -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@stlite/mountable@0.31.1/build/stlite.css" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script src="https://cdn.jsdelivr.net/npm/@stlite/mountable@0.31.1/build/stlite.js"></script>
+    <script>
+      stlite.mount(
+        {
+          requirements: ["pandas", "numpy"],
+          mainScriptData: `
+import streamlit as st
+import pandas as pd
+import numpy as np
+
+# ページ設定
+st.set_page_config(page_title="OtonaShokudo UBI-GenAI Prototype", layout="wide")
+
+# タイトルと世界観の提示
+st.title("OtonaShokudo-UBI-GenAI Policy Prototype")
+st.markdown("""
+**「誰一人取り残さない、持続可能な地域社会を目指して」**
+大人食堂の整備による孤立の防止、ベーシックインカム（UBI）による経済的な安定、AIオーケストレーションによるリソース最適化とメンタルケア。
+これらを組み合わせることで、地域の経済不安や孤立を和らげることを目指す政策提言プロトタイプです。
+""")
+
+st.caption(
+    "本プロトタイプは概念実証（PoC）段階のデモです。以下のシミュレーターに表示される数値はすべて仮の簡易モデルによるものであり、"
+    "実測データに基づく試算ではありません。実データによる検証は、基礎自治体レベルでの実証実験を通じて今後行っていく方針です。"
+)
+
+# サイドバーで機能切り替え
+menu = st.sidebar.radio("機能メニュー", ["1. ビジョン＆コンセプト", "2. UBI × 政策シミュレーター", "3. 仮想大人食堂 (GenAI対話)"])
+
+if menu == "1. ビジョン＆コンセプト":
+    st.header("構想を支える3つの柱")
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.subheader("大人食堂")
+        st.write("年齢を問わず、誰もが温かい食事と対話を得られる地域のセーフティネット。孤立を防ぎ、共助のコミュニティを形成することを目指します。")
+    with col2:
+        st.subheader("UBI（ベーシックインカム）")
+        st.write("生存に必要な最低限の給付を無条件で行うことで、経済的な不安を和らげることを目指します。給付は法定通貨ペッグ型とし、記帳はオンチェーンで透明性を担保する設計です。")
+    with col3:
+        st.subheader("GenAI（生成AI）")
+        st.write("フードロスの最適分配（GX連携）、個別のメンタルケア、DAOによる透明な資源管理など、地域の課題調整をAIが支援することを目指します。")
+
+    st.caption("本構想の理念・背景にある想いについては、リポジトリの VISION.md（内部メモ）に別途記載しています。")
+
+elif menu == "2. UBI × 政策シミュレーター":
+    st.header("政策インパクト・シミュレーター（概念実証モデル）")
+    st.write("地域の大人食堂に還元するUBI給付額と、フードロス活用率を調整すると、指標がどう変化するかを試算できます。")
+    st.warning("※このシミュレーターは概念実証のための簡易モデルであり、実測データに基づく数値ではありません。係数はすべて仮置きです。")
+
+    ubi_amount = st.slider("地域UBI給付額（月額・円）", 0, 100000, 50000, step=5000)
+    food_rescue = st.slider("地域の未利用食品活用率（%）", 0, 100, 30, step=5)
+
+    # シミュレーションデータの生成（仮の簡易ロジック。型はfloatに統一）
+    anxiety_index = max(100.0 - (float(ubi_amount) / 1000.0), 10.0)
+    co2_reduction = float(food_rescue) * 1.5
+    community_score = min((float(ubi_amount) / 2000.0) + (float(food_rescue) / 2.0), 100.0)
+
+    col1, col2, col3 = st.columns(3)
+    col1.metric(label="経済・孤立不安度の試算値（低いほど良い・仮モデル）", value=f"{anxiety_index:.1f}")
+    col2.metric(label="CO2削減効果の試算値（トン・仮モデル）", value=f"{co2_reduction:.1f}")
+    col3.metric(label="コミュニティ共助スコアの試算値（仮モデル）", value=f"{community_score:.1f}")
+
+    st.info("政策提言の方向性（検討段階）：UBIの財源は、地域の環境価値（カーボンクレジット）や、DAOによる地域トークン発行との連携が選択肢として考えられます。")
+
+elif menu == "3. 仮想大人食堂 (GenAI対話)":
+    st.header("仮想大人食堂へようこそ")
+    st.write("GenAIが、あなたの話を聞き、地域のコミュニティ活動や食事を案内するデモです。（※プロトタイプのためモックアップ応答です）")
+
+    # セッション状態（会話履歴）の初期化。これがないと入力のたびに画面から履歴が消える
+    # なお、サイドバーで他のメニューに切り替えてから本メニューに戻っても、この履歴は保持される仕様（意図的な挙動）
+    if "messages" not in st.session_state:
+        st.session_state.messages = [
+            {"role": "assistant", "content": "お疲れ様です。大人食堂へようこそ！今日はお話をしにきましたか？それとも美味しいご飯を食べにきましたか？何でも気軽に話してくださいね。"}
+        ]
+
+    # 過去の会話履歴をすべて再描画
+    for msg in st.session_state.messages:
+        with st.chat_message(msg["role"]):
+            st.write(msg["content"])
+
+    # ユーザーからの新規入力
+    if user_input := st.chat_input("「最近、仕事のプレッシャーが強くて…」など、何でも話してください。"):
+        st.session_state.messages.append({"role": "user", "content": user_input})
+        with st.chat_message("user"):
+            st.write(user_input)
+
+        # 簡易的な応答ロジック（キーワードに応じたモック変化。実際のLLM APIとの接続は今後の課題）
+        if "仕事" in user_input or "疲" in user_input or "プレッシャー" in user_input:
+            ai_response = (
+                f"「{user_input}」とのこと、毎日本当にお疲れ様です。頑張りすぎていませんか？\n\n"
+                "今夜の大人食堂は、地元産の規格外野菜を使った温かい豚汁を用意しています。同じように仕事で悩んだ経験のある常連さんも来ていますよ。"
+                "UBI給付の対象者は参加費無料です。ここで少し荷物を下ろして、温まっていきませんか？"
+            )
+        elif "お金" in user_input or "生活" in user_input or "経済" in user_input:
+            ai_response = (
+                "生活やお金の不安は、心にも大きな負担になりますよね。\n\n"
+                "この地域では、UBI（ベーシックインカム）による最低限の生活サポートと、大人食堂での食費の軽減を組み合わせて、"
+                "少しでも安心して暮らせる仕組みを目指しています。明日は臨時のライフプラン相談会も食堂の奥で開かれますよ。"
+            )
+        else:
+            ai_response = (
+                f"お話ししてくださりありがとうございます。「{user_input}」というお気持ち、しっかりと受け止めました。\n\n"
+                "大人食堂は、いつでもあなたを歓迎します。美味しいご飯を食べて、ホッと一息つきながら、これからのことを一緒に考えていきましょう。"
+            )
+
+        st.session_state.messages.append({"role": "assistant", "content": ai_response})
+        with st.chat_message("assistant"):
+            st.write(ai_response)
+
+st.sidebar.markdown("---")
+st.sidebar.caption("© 2026 kodomo-shokudo-dao-gennai / OtonaShokudo-UBI-GenAI Prototype")
+`
+        },
+        document.getElementById("root")
+      );
+    </script>
+  </body>
+</html>
