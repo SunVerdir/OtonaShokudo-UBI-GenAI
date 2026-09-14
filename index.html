@@ -2,87 +2,24 @@
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>OtonaShokudo-UBI-GenAI Prototype</title>
-    <!-- バージョン固定版のstliteを読み込み -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@stlite/mountable@0.63.1/build/stlite.css" />
+    <!-- stlite（最新安定版）の読み込み -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@stlite/mountable/build/stlite.css" />
   </head>
   <body>
     <div id="root"></div>
-    <script src="https://cdn.jsdelivr.net/npm/@stlite/mountable@0.63.1/build/stlite.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@stlite/mountable/build/stlite.js"></script>
     <script>
       stlite.mount(
         {
           requirements: ["pandas", "numpy"],
-          mainScriptData: `
-import streamlit as st
-import pandas as pd
-import numpy as np
-
-st.set_page_config(page_title="OtonaShokudo UBI-GenAI Prototype", layout="wide")
-
-st.title("OtonaShokudo-UBI-GenAI Policy Prototype")
-st.markdown("""
-**「誰一人取り残さない、持続可能な地域社会を目指して」**  
-大人食堂の整備による孤立の防止、ベーシックインカム（UBI）による経済的な安定、AIオーケストレーションによるリソース最適化とメンタルケア。
-これらを組み合わせることで、地域の経済不安や孤立を和らげることを目指す政策提言プロトタイプです。
-""")
-
-st.caption("本プロトタイプは概念実証（PoC）段階のデモです。数値は仮の簡易モデルによるものです。")
-
-menu = st.sidebar.radio("機能メニュー", ["1. ビジョン＆コンセプト", "2. UBI × 政策シミュレーター", "3. 仮想大人食堂 (GenAI対話)"])
-
-if menu == "1. ビジョン＆コンセプト":
-    st.header("構想を支える3つの柱")
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        st.subheader("大人食堂")
-        st.write("年齢を問わず、誰もが温かい食事と対話を得られる地域のセーフティネット。")
-    with col2:
-        st.subheader("UBI（ベーシックインカム）")
-        st.write("生存に必要な最低限の給付を無条件で行い、経済的心理不安を和らげる設計。")
-    with col3:
-        st.subheader("GenAI（生成AI）")
-        st.write("フードロスの最適分配やメンタルケア、DAO連携による透明な資源管理を支援。")
-
-elif menu == "2. UBI × 政策シミュレーター":
-    st.header("政策インパクト・シミュレーター（概念実証モデル）")
-    ubi_amount = st.slider("地域UBI給付額（月額・円）", 0, 100000, 50000, step=5000)
-    food_rescue = st.slider("地域の未利用食品活用率（%）", 0, 100, 30, step=5)
-
-    anxiety_index = max(100.0 - (float(ubi_amount) / 1000.0), 10.0)
-    co2_reduction = float(food_rescue) * 1.5
-    community_score = min((float(ubi_amount) / 2000.0) + (float(food_rescue) / 2.0), 100.0)
-
-    col1, col2, col3 = st.columns(3)
-    col1.metric("経済・孤立不安度（試算値）", f"{anxiety_index:.1f}")
-    col2.metric("CO2削減効果（トン）", f"{co2_reduction:.1f}")
-    col3.metric("コミュニティ共助スコア", f"{community_score:.1f}")
-
-elif menu == "3. 仮想大人食堂 (GenAI対話)":
-    st.header("仮想大人食堂へようこそ")
-    if "messages" not in st.session_state:
-        st.session_state.messages = [
-            {"role": "assistant", "content": "お疲れ様です。大人食堂へようこそ！今日はお話をしにきましたか？それとも美味しいご飯を食べにきましたか？"}
-        ]
-
-    for msg in st.session_state.messages:
-        with st.chat_message(msg["role"]):
-            st.write(msg["content"])
-
-    if user_input := st.chat_input("メッセージを入力してください"):
-        st.session_state.messages.append({"role": "user", "content": user_input})
-        with st.chat_message("user"):
-            st.write(user_input)
-
-        ai_response = f"お話ししてくださりありがとうございます。「{user_input}」というお気持ち、しっかりと受け止めました。温かいご飯を食べてホッと一息ついていってくださいね。"
-        st.session_state.messages.append({"role": "assistant", "content": ai_response})
-        with st.chat_message("assistant"):
-            st.write(ai_response)
-
-st.sidebar.markdown("---")
-st.sidebar.caption("© 2026 OtonaShokudo-UBI-GenAI Prototype")
-`
+          entrypoint: "app.py",
+          files: {
+            "app.py": {
+              url: "app.py"
+            }
+          }
         },
         document.getElementById("root")
       );
