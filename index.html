@@ -4,12 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OtonaShokudo-UBI-GenAI Prototype</title>
-    <!-- stliteのスタイルシートとスクリプトを読み込み（無料でブラウザ上でPythonを動かす仕組み） -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@stlite/mountable@0.31.1/build/stlite.css" />
+    <!-- 最新版stliteのスタイルシートとスクリプトを読み込み -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@stlite/mountable/build/stlite.css" />
   </head>
   <body>
     <div id="root"></div>
-    <script src="https://cdn.jsdelivr.net/npm/@stlite/mountable@0.31.1/build/stlite.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@stlite/mountable/build/stlite.js"></script>
     <script>
       stlite.mount(
         {
@@ -77,8 +77,7 @@ elif menu == "3. 仮想大人食堂 (GenAI対話)":
     st.header("仮想大人食堂へようこそ")
     st.write("GenAIが、あなたの話を聞き、地域のコミュニティ活動や食事を案内するデモです。（※プロトタイプのためモックアップ応答です）")
 
-    # セッション状態（会話履歴）の初期化。これがないと入力のたびに画面から履歴が消える
-    # なお、サイドバーで他のメニューに切り替えてから本メニューに戻っても、この履歴は保持される仕様（意図的な挙動）
+    # セッション状態（会話履歴）の初期化
     if "messages" not in st.session_state:
         st.session_state.messages = [
             {"role": "assistant", "content": "お疲れ様です。大人食堂へようこそ！今日はお話をしにきましたか？それとも美味しいご飯を食べにきましたか？何でも気軽に話してくださいね。"}
@@ -95,22 +94,22 @@ elif menu == "3. 仮想大人食堂 (GenAI対話)":
         with st.chat_message("user"):
             st.write(user_input)
 
-        # 簡易的な応答ロジック（キーワードに応じたモック変化。実際のLLM APIとの接続は今後の課題）
+        # 簡易的な応答ロジック
         if "仕事" in user_input or "疲" in user_input or "プレッシャー" in user_input:
             ai_response = (
-                f"「{user_input}」とのこと、毎日本当にお疲れ様です。頑張りすぎていませんか？\n\n"
+                f"「{user_input}」とのこと、毎日本当にお疲れ様です。頑張りすぎていませんか？\\n\\n"
                 "今夜の大人食堂は、地元産の規格外野菜を使った温かい豚汁を用意しています。同じように仕事で悩んだ経験のある常連さんも来ていますよ。"
                 "UBI給付の対象者は参加費無料です。ここで少し荷物を下ろして、温まっていきませんか？"
             )
         elif "お金" in user_input or "生活" in user_input or "経済" in user_input:
             ai_response = (
-                "生活やお金の不安は、心にも大きな負担になりますよね。\n\n"
+                "生活やお金の不安は、心にも大きな負担になりますよね。\\n\\n"
                 "この地域では、UBI（ベーシックインカム）による最低限の生活サポートと、大人食堂での食費の軽減を組み合わせて、"
                 "少しでも安心して暮らせる仕組みを目指しています。明日は臨時のライフプラン相談会も食堂の奥で開かれますよ。"
             )
         else:
             ai_response = (
-                f"お話ししてくださりありがとうございます。「{user_input}」というお気持ち、しっかりと受け止めました。\n\n"
+                f"お話ししてくださりありがとうございます。「{user_input}」というお気持ち、しっかりと受け止めました。\\n\\n"
                 "大人食堂は、いつでもあなたを歓迎します。美味しいご飯を食べて、ホッと一息つきながら、これからのことを一緒に考えていきましょう。"
             )
 
