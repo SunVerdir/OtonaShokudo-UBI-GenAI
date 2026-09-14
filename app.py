@@ -60,8 +60,7 @@ elif menu == "3. 仮想大人食堂 (GenAI対話)":
     st.header("仮想大人食堂へようこそ")
     st.write("GenAIが、あなたの話を聞き、地域のコミュニティ活動や食事を案内するデモです。（※プロトタイプのためモックアップ応答です）")
 
-    # セッション状態（会話履歴）の初期化。これがないと入力のたびに画面から履歴が消える
-    # なお、サイドバーで他のメニューに切り替えてから本メニューに戻っても、この履歴は保持される仕様（意図的な挙動）
+    # セッション状態（会話履歴）の初期化
     if "messages" not in st.session_state:
         st.session_state.messages = [
             {"role": "assistant", "content": "お疲れ様です。大人食堂へようこそ！今日はお話をしにきましたか？それとも美味しいご飯を食べにきましたか？何でも気軽に話してくださいね。"}
@@ -78,7 +77,7 @@ elif menu == "3. 仮想大人食堂 (GenAI対話)":
         with st.chat_message("user"):
             st.write(user_input)
 
-        # 簡易的な応答ロジック（キーワードに応じたモック変化。実際のLLM APIとの接続は今後の課題）
+        # 簡易的な応答ロジック
         if "仕事" in user_input or "疲" in user_input or "プレッシャー" in user_input:
             ai_response = (
                 f"「{user_input}」とのこと、毎日本当にお疲れ様です。頑張りすぎていませんか？\n\n"
@@ -102,4 +101,4 @@ elif menu == "3. 仮想大人食堂 (GenAI対話)":
             st.write(ai_response)
 
 st.sidebar.markdown("---")
-st.sidebar.caption("© 2026 kodomo-shokudo-dao-gennai / OtonaShokudo-UBI-GenAI Prototype")
+st.sidebar.caption("© 2026 OtonaShokudo-UBI-GenAI Prototype")
